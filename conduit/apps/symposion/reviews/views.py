@@ -176,12 +176,12 @@ def review_detail(request_review_detail, pk):
     proposal = get_object_or_404(proposals, pk=pk)
 
     if not request_review_detail.user.has_perm("reviews.can_review_%s" % proposal.kind.section.slug):
-        return render(request_review_detail, "symposion/reviews/access_not_permitted.html", "you do not have access to review details")
+        return access_not_permitted(request_review_detail, "you do not have access to review details")
 
     speakers = [s.user for s in proposal.speakers()]
 
     if not request_review_detail.user.is_superuser and request_review_detail.user in speakers:
-        return render(request_review_detail, "symposion/reviews/access_not_permitted.html", "you do not have access to review details for speakers")
+        return access_not_permitted(request_review_detail, "you do not have access to review details for speakers")
 
     admin = request_review_detail.user.is_staff
 
@@ -192,7 +192,7 @@ def review_detail(request_review_detail, pk):
 
     if request_review_detail.method == "POST":
         if request_review_detail.user in speakers:
-            return render(request_review_detail, "symposion/reviews/access_not_permitted.html", "you do not have access to review details for speakers")
+            return access_not_permitted(request_review_detail, "you do not have access to review details for speakers")
 
         if "vote_submit" in request_review_detail.POST:
             review_form = ReviewForm(request_review_detail.POST)
@@ -291,7 +291,7 @@ def review_delete(request_delete, pk):
     section_slug = review.section.slug
 
     if not request_delete.user.has_perm("reviews.can_manage_%s" % section_slug):
-        return render(request_delete, "symposion/reviews/access_not_permitted.html", "you do not have access to delete users")
+        return access_not_permitted(request_delete, "you do not have access to delete users")
 
     review = get_object_or_404(Review, pk=pk)
     review.delete()
@@ -303,7 +303,7 @@ def review_delete(request_delete, pk):
 def review_status(request_review_status, section_slug=None, key=None):
 
     if not request_review_status.user.has_perm("reviews.can_review_%s" % section_slug):
-        return render(request_review_status, "symposion/reviews/access_not_permitted.html", "you do not have access to review status")
+        return access_not_permitted(request_review_status, "you do not have access to review status")
 
     VOTE_THRESHOLD = settings.SYMPOSION_VOTE_THRESHOLD
 
@@ -360,7 +360,7 @@ def review_status(request_review_status, section_slug=None, key=None):
 @login_required
 def review_assignments(request_review_assignments):
     if not request_review_assignments.user.groups.filter(name="reviewers").exists():
-        return render(request_review_assignments, "symposion/reviews/access_not_permitted.html", "you do not have access to review assignments")
+        return access_not_permitted(request_review_assignments, "you do not have access to review assignments")
     assignments = ReviewAssignment.objects.filter(
         user=request_review_assignments.user,
         opted_out=False
@@ -386,7 +386,7 @@ def review_assignment_opt_out(request_review_assignment_opt_out, pk):
 @login_required
 def review_bulk_accept(request_review_bulk_accept, section_slug):
     if not request_review_bulk_accept.user.has_perm("reviews.can_manage_%s" % section_slug):
-        return render(request_review_bulk_accept, "symposion/reviews/access_not_permitted.html", "you do not have access to bulk accept reviews")
+        return access_not_permitted(request_review_bulk_accept, "you do not have access to bulk accept reviews")
     if request_review_bulk_accept.method == "POST":
         form = BulkPresentationForm(request_review_bulk_accept.POST)
         if form.is_valid():
@@ -407,7 +407,7 @@ def review_bulk_accept(request_review_bulk_accept, section_slug):
 @login_required
 def result_notification(request_result_notification, section_slug, status):
     if not request_result_notification.user.has_perm("reviews.can_manage_%s" % section_slug):
-        return render(request_result_notification, "symposion/reviews/access_not_permitted.html", "you do not have access to request result notifications")
+        return access_not_permitted(request_result_notification, "you do not have access to request result notifications")
 
     proposals = ProposalBase.objects.filter(kind__section__slug=section_slug, result__status=status).select_related("speaker__user", "result").select_subclasses()
     notification_templates = NotificationTemplate.objects.all()
@@ -427,7 +427,7 @@ def result_notification_prepare(request_result_notification_prepare, section_slu
         return HttpResponseNotAllowed(["POST"])
 
     if not request_result_notification_prepare.user.has_perm("reviews.can_manage_%s" % section_slug):
-        return render(request_result_notification_prepare, "symposion/reviews/access_not_permitted.html", "you do not have access to manage reviews")
+        return access_not_permitted(request_result_notification_prepare, "you do not have access to manage reviews")
 
     proposal_pks = []
     try:
@@ -467,7 +467,7 @@ def result_notification_send(request_result_notification_send, section_slug, sta
         return HttpResponseNotAllowed(["POST"])
 
     if not request_result_notification_send.user.has_perm("reviews.can_manage_%s" % section_slug):
-        return render(request_result_notification_send, "symposion/reviews/access_not_permitted.html", "you do not have access to request result notifications")
+        return access_not_permitted(request_result_notification_send, "you do not have access to request result notifications")
 
     if not all([k in request_result_notification_send.POST for k in ["proposal_pks", "from_address", "subject", "body"]]):
         return HttpResponseBadRequest()
@@ -517,7 +517,7 @@ def result_notification_send(request_result_notification_send, section_slug, sta
 @login_required
 def review_staff_comment(request_review_staff_comment, section_slug):
     if not request_review_staff_comment.user.has_perm("reviews.can_manage%s" % section_slug):
-        return render(request_review_staff_comment,"symposion/reviews/access_not_permitted.html", "you do not have permission to accept staff reviews")
+        return access_not_permitted(request_review_staff_comment, "you do not have permission to accept staff reviews")
     if request_review_staff_comment.method == "POST":
         form = StaffCommentForm(request_review_staff_comment.POST)
         # TODO: complete implementation of staff comment form - split and mark accepted            
