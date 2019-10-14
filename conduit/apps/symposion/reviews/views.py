@@ -68,7 +68,7 @@ def access_not_permitted(request,error_message):
 def review_section(request_review, section_slug, assigned=False, reviewed="all"):
 
     if not request_review.user.has_perm("reviews.can_review_%s" % section_slug):
-        return render(request_review, "symposion/reviews/access_not_permitted.html","you do not have access to reviews")
+        return access_not_permitted(request_review, "you do not have access to reviews")
 
     section = get_object_or_404(ProposalSection, section__slug=section_slug)
     queryset = ProposalBase.objects.filter(kind__section=section.section)
@@ -109,7 +109,7 @@ def review_list(request_review_list, section_slug, user_pk):
     # review list is being asked for, don't let them in
     if not request_review_list.user.has_perm("reviews.can_manage_%s" % section_slug):
         if not request_review_list.user.pk == user_pk:
-            return render(request_review_list, "symposion/reviews/access_not_permitted.html", "you do not have access to review lists")
+            return access_not_permitted(request_review_list, "you do not have access to review lists")
 
     queryset = ProposalBase.objects.select_related("speaker__user", "result")
     reviewed = LatestVote.objects.filter(user__pk=user_pk).values_list("proposal", flat=True)
@@ -130,7 +130,7 @@ def review_list(request_review_list, section_slug, user_pk):
 def review_admin(request_review_admin, section_slug):
 
     if not request_review_admin.user.has_perm("reviews.can_manage_%s" % section_slug):
-        return render(request_review_admin, "symposion/reviews/access_not_permitted.html", "you do not have access to administer reviews")
+        return access_not_permitted(request_review_admin, "you do not have access to administer reviews")
 
     def reviewers():
         already_seen = set()
