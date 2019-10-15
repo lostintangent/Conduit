@@ -6,6 +6,7 @@
         "ms-python.python",
         "eamodio.gitlens",
         "Gruntfuggly.todo-tree",
-        "pkief.material-icon-theme"
+        "pkief.material-icon-theme",
+        "zhuangtongfa.Material-theme"
     ]
 }
