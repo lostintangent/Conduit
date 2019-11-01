@@ -51,3 +51,4 @@ class SpeakerCommentForm(forms.ModelForm):
         fields = ["message"]
  
 # TODO: Add staff review form
+class StaffReviewForm(forms.Form):
