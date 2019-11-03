@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.http import HttpResponseRedirect
 
 def redirect(self):
-    return HttpResponseRedirect("/api/")
+    return HttpResponseRedirect("/api/articles")
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
