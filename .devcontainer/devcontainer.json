@@ -1,4 +1,5 @@
 {
+    "dockerFile": "Dockerfile",
     "extensions": [
         "/home/vsonline/workspace/.devcontainer/codelinecomplete-0.4.1-demo.vsix",
         "/home/vsonline/workspace/.devcontainer/intellicode-refactorings-0.0.6.vsix",
