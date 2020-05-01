@@ -8,5 +8,8 @@
         "Gruntfuggly.todo-tree",
         "pkief.material-icon-theme",
         "zhuangtongfa.Material-theme"
-    ]
+    ],
+    "settings: {
+        "workbench.startupEditor": "none"
+    }
 }
