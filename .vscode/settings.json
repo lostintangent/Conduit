@@ -2,5 +2,6 @@
     "python.pythonPath": "pythonenv3.7/bin/python",
     "python.linting.enabled": false,
     "python.jediEnabled": false,
-    "terminal.integrated.shell.linux": "/usr/bin/fish"
+    "terminal.integrated.shell.linux": "/usr/bin/fish",
+    "workbench.startupEditor": "none"
 }
