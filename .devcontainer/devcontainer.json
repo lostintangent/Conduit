@@ -9,7 +9,7 @@
         "pkief.material-icon-theme",
         "zhuangtongfa.Material-theme"
     ],
-    "settings: {
+    "settings": {
         "workbench.startupEditor": "none"
     }
 }
